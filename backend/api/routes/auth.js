@@ -44,4 +44,19 @@ router.get('/me', requireAuth, (req, res) => {
   res.json(req.user);
 });
 
+router.post('/elevate', requireAuth, async (req, res) => {
+  try {
+    const { password } = req.body;
+    const adminPassword = process.env.ADMIN_PASSWORD || 'smartseason@admin';
+    if (password === adminPassword) {
+      await query(`UPDATE users SET role = 'admin' WHERE id = $1`, [req.user.id]);
+      res.json({ success: true, message: 'Role elevated to admin' });
+    } else {
+      res.status(403).json({ error: 'Incorrect admin password' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;

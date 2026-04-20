@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../lib/api';
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
 
@@ -8,13 +9,18 @@ export default function AdminGate() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      sessionStorage.setItem('admin_unlocked', 'true');
-      navigate('/admin');
-    } else {
-      setError('Incorrect password.');
+    try {
+      if (password === ADMIN_PASSWORD) {
+        await api.post('/auth/elevate', { password });
+        sessionStorage.setItem('admin_unlocked', 'true');
+        navigate('/admin');
+      } else {
+        setError('Incorrect password.');
+      }
+    } catch (err) {
+      setError('Failed to elevate permissions on server.');
     }
   }
 

@@ -12,9 +12,6 @@ export default function AdminDashboard() {
     api.get('/dashboard/admin').then(res => setStats(res.data)).catch(console.error);
   }, []);
 
-  const atRiskFields = stats?.recent_updates
-    ? []
-    : [];
 
   return (
     <div className="bg-surface text-on-surface antialiased flex min-h-screen">

@@ -24,7 +24,7 @@ function AuthSync() {
           const token = await getToken();
           const name = user.fullName || user.username || user.primaryEmailAddress?.emailAddress || 'Unknown';
           const email = user.primaryEmailAddress?.emailAddress;
-          const res = await api.post('/auth/sync', {
+          await api.post('/auth/sync', {
             name,
             email,
             role: user.publicMetadata?.role || 'agent'

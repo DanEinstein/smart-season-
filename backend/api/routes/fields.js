@@ -21,7 +21,7 @@ const buildFieldResponse = (fieldRow) => {
     created_by: fieldRow.created_by,
     created_at: fieldRow.created_at,
     updated_at: fieldRow.updated_at,
-    last_update_date: fieldRow.last_update_date || fieldRow.updated_at // fallback
+    last_update_date: fieldRow.last_update_date || fieldRow.updated_at
   };
 };
 

@@ -6,7 +6,7 @@ const router = express.Router({ mergeParams: true });
 
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const { id } = req.params; // field_id
+    const { id } = req.params;
 
     const fieldResult = await query('SELECT assigned_agent_id FROM fields WHERE id = $1', [id]);
     if (fieldResult.rows.length === 0) return res.status(404).json({ error: 'Field not found' });

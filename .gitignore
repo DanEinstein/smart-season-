@@ -62,5 +62,9 @@ desktop.ini
 .prettierrc.local
 .eslintcache
 
-# 7. VERCEL DEPLOYMENT CACHE
-.vercel/
+# 7. LOCK FILES (editor/office temp files)
+.~lock.*
+
+# 8. LOCAL UTILITY SCRIPTS (not part of the application)
+backend/api/check.js
+backend/api/elevate.js

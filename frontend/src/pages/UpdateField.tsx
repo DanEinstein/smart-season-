@@ -9,19 +9,25 @@ export default function UpdateField() {
   const [field, setField] = useState<any>(null);
   const [updates, setUpdates] = useState<any[]>([]);
   const [form, setForm] = useState({ stage: 'growing', notes: '' });
+  const [error, setError] = useState('');
 
   useEffect(() => {
     api.get(`/fields/${id}`).then(res => {
       setField(res.data);
       setForm(f => ({ ...f, stage: res.data.current_stage }));
     }).catch(console.error);
-    api.get(`/fields/${id}/updates`).then(res => setUpdates(res.data)).catch(console.error);
+    api.get(`/fields/${id}/updates`).then(res => setUpdates(Array.isArray(res.data) ? res.data : [])).catch(console.error);
   }, [id]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await api.post(`/fields/${id}/updates`, form);
-    navigate(`/fields/${id}`);
+    setError('');
+    try {
+      await api.post(`/fields/${id}/updates`, form);
+      navigate(`/fields/${id}`);
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to submit update.');
+    }
   }
 
   return (
@@ -71,6 +77,7 @@ export default function UpdateField() {
                   ></textarea>
                 </div>
                 <div className="flex items-center gap-4 pt-4">
+                  {error && <p className="text-xs text-error font-semibold flex-1">{error}</p>}
                   <button className="flex-1 md:flex-none md:px-12 py-4 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-xl shadow-lg active:scale-95 transition-all" type="submit">
                     Submit Update
                   </button>

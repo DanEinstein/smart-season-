@@ -9,8 +9,15 @@ export default function FieldManagement() {
   const isAdmin = sessionStorage.getItem('admin_unlocked') === 'true';
 
   useEffect(() => {
-    api.get('/fields').then(res => setFields(res.data)).catch(console.error);
+    api.get('/fields').then(res => setFields(Array.isArray(res.data) ? res.data : [])).catch(console.error);
   }, []);
+
+  async function handleDelete(e: React.MouseEvent, id: string) {
+    e.stopPropagation();
+    if (!confirm('Delete this field? This cannot be undone.')) return;
+    await api.delete(`/fields/${id}`);
+    setFields(prev => prev.filter(f => f.id !== id));
+  }
 
   return (
     <div className="bg-surface text-on-surface min-h-screen">
@@ -109,9 +116,16 @@ export default function FieldManagement() {
                         <button className="p-2 hover:bg-surface-container rounded-lg transition-colors text-primary" onClick={(e) => { e.stopPropagation(); navigate(`/fields/${field.id}`); }}>
                           <span className="material-symbols-outlined text-xl">visibility</span>
                         </button>
-                        <button className="p-2 hover:bg-surface-container rounded-lg transition-colors text-primary" onClick={(e) => { e.stopPropagation(); navigate(`/fields/${field.id}/edit`); }}>
-                          <span className="material-symbols-outlined text-xl">edit</span>
-                        </button>
+                        {isAdmin && (
+                          <>
+                            <button className="p-2 hover:bg-surface-container rounded-lg transition-colors text-primary" onClick={(e) => { e.stopPropagation(); navigate(`/fields/${field.id}/edit`); }}>
+                              <span className="material-symbols-outlined text-xl">edit</span>
+                            </button>
+                            <button className="p-2 hover:bg-surface-container rounded-lg transition-colors text-error" onClick={(e) => handleDelete(e, field.id)}>
+                              <span className="material-symbols-outlined text-xl">delete</span>
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

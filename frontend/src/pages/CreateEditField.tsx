@@ -7,6 +7,7 @@ import TopBar from '../components/TopBar';
 export default function CreateEditField() {
   const navigate = useNavigate();
   const [agents, setAgents] = useState<any[]>([]);
+  const [error, setError] = useState('');
   const [form, setForm] = useState({
     name: '',
     crop_type: 'Winter Wheat',
@@ -21,8 +22,13 @@ export default function CreateEditField() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await api.post('/fields', { ...form, assigned_agent_id: form.assigned_agent_id || null });
-    navigate('/fields');
+    setError('');
+    try {
+      await api.post('/fields', { ...form, assigned_agent_id: form.assigned_agent_id || null });
+      navigate('/fields');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to create field.');
+    }
   }
 
   return (
@@ -116,6 +122,7 @@ export default function CreateEditField() {
                 </div>
 
                 <div className="pt-4 flex items-center justify-end gap-4">
+                  {error && <p className="text-xs text-error font-semibold flex-1">{error}</p>}
                   <button
                     className="px-8 py-3 text-primary font-bold hover:bg-surface-container-high rounded-lg transition-all"
                     type="button"

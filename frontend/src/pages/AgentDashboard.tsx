@@ -24,7 +24,7 @@ export default function AgentDashboard() {
 
   useEffect(() => {
     api.get('/dashboard/agent').then(res => setStats(res.data)).catch(console.error);
-    api.get('/fields').then(res => setFields(res.data)).catch(console.error);
+    api.get('/fields').then(res => setFields(Array.isArray(res.data) ? res.data : [])).catch(console.error);
   }, []);
 
   return (

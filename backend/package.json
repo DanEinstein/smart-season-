@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx src/server.ts"
+    "dev": "node --watch api/index.js"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.23",
